@@ -1,0 +1,33 @@
+{
+	"name": "fastify-tinyrpc",
+	"version": "0.1.0",
+	"description": "A tiny rpc handler for fastify framework",
+	"main": "_dist/tinyrpc.js",
+	"scripts": {
+		"prebuild": "rm -rf _dist",
+		"build": "tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JCloudYu/open.node.fastify-tinyrpc.git"
+	},
+	"keywords": [
+		"RPC",
+		"TinyRPC",
+		"FastifyTinyRPC"
+	],
+	"author": "JCloudYu",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/JCloudYu/open.node.fastify-tinyrpc/issues"
+	},
+	"homepage": "https://github.com/JCloudYu/open.node.fastify-tinyrpc#readme",
+	"dependencies": {
+		"beson": "^3.1.5",
+		"fastify-plugin": "^4.2.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.7.8",
+		"fastify": "^4.5.2"
+	}
+}
