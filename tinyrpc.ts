@@ -5,11 +5,12 @@ import fp from "fastify-plugin";
 
 const DEFAULT_SIZE_LIMIT = 10 * 1024 * 1024;
 
-interface CallHandler {(...args:any[]):Promise<any>|any};
+interface InvokeSession { request:import('fastify').FastifyRequest; response:import('fastify').FastifyReply; }
+interface CallHandler {(this:InvokeSession, ...args:any[]):Promise<any>|any};
 interface CallMap {
 	[call:string]:CallHandler|{
 		handler:CallHandler;
-		args_checker?:{(...args:any[]):true|string[]};
+		args_checker?:{(this:InvokeSession, ...args:any[]):true|string[]};
 	};
 }
 interface TinyRPCOptions {
@@ -128,6 +129,7 @@ const plugin:import('fastify').FastifyPluginAsync<TinyRPCOptions> = async(fastif
 		}
 
 		
+		const request_session:InvokeSession = {request:req, response:res};
 		let handler:CallHandler;
 		if ( typeof rpc_info === "function" ) {
 			handler = rpc_info;
@@ -137,7 +139,7 @@ const plugin:import('fastify').FastifyPluginAsync<TinyRPCOptions> = async(fastif
 
 			if ( rpc_info.args_checker ) {
 				try {
-					const result = rpc_info.args_checker(...args);
+					const result = rpc_info.args_checker.call(request_session, ...args);
 					if ( result !== true ) {
 						return res.send({
 							rpc:'1.0',
@@ -165,7 +167,7 @@ const plugin:import('fastify').FastifyPluginAsync<TinyRPCOptions> = async(fastif
 			}
 		}
 
-		const result = await Promise.resolve().then(()=>handler(...args)).catch((e:any)=>e);
+		const result = await Promise.resolve().then(()=>handler.call(request_session, ...args)).catch((e:any)=>e);
 		if ( result instanceof Error ) {
 			const err:Error&{code?:string;detail?:any} = result;
 			return res.send({

@@ -1,12 +1,16 @@
 /// <reference types="node" />
+interface InvokeSession {
+    request: import('fastify').FastifyRequest;
+    response: import('fastify').FastifyReply;
+}
 interface CallHandler {
-    (...args: any[]): Promise<any> | any;
+    (this: InvokeSession, ...args: any[]): Promise<any> | any;
 }
 interface CallMap {
     [call: string]: CallHandler | {
         handler: CallHandler;
         args_checker?: {
-            (...args: any[]): true | string[];
+            (this: InvokeSession, ...args: any[]): true | string[];
         };
     };
 }

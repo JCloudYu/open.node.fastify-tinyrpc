@@ -1,6 +1,6 @@
 {
 	"name": "fastify-tinyrpc",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A tiny rpc handler for fastify framework",
 	"main": "_dist/tinyrpc.js",
 	"scripts": {

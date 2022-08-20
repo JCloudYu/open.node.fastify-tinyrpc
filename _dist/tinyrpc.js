@@ -107,6 +107,7 @@ const plugin = (fastify, options) => __awaiter(void 0, void 0, void 0, function*
                 }
             });
         }
+        const request_session = { request: req, response: res };
         let handler;
         if (typeof rpc_info === "function") {
             handler = rpc_info;
@@ -115,7 +116,7 @@ const plugin = (fastify, options) => __awaiter(void 0, void 0, void 0, function*
             handler = rpc_info.handler;
             if (rpc_info.args_checker) {
                 try {
-                    const result = rpc_info.args_checker(...args);
+                    const result = rpc_info.args_checker.call(request_session, ...args);
                     if (result !== true) {
                         return res.send({
                             rpc: '1.0',
@@ -142,7 +143,7 @@ const plugin = (fastify, options) => __awaiter(void 0, void 0, void 0, function*
                 }
             }
         }
-        const result = yield Promise.resolve().then(() => handler(...args)).catch((e) => e);
+        const result = yield Promise.resolve().then(() => handler.call(request_session, ...args)).catch((e) => e);
         if (result instanceof Error) {
             const err = result;
             return res.send({
